@@ -1,9 +1,9 @@
-name: Deploy AWS VPC, Subnet & EC2
+name: Deploy AWS VPC and Subnet with OIDC
 
 on:
   push:
     branches:
-      - main
+      - main  # Trigger on push to the main branch
 
 permissions:
   id-token: write
@@ -11,18 +11,18 @@ permissions:
 
 jobs:
   terraform:
-    name: Terraform Apply
+    name: Apply Terraform
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Configure AWS Credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
